@@ -14,10 +14,24 @@ permissions:
 jobs:
   build:
     name: BUILD-JOB
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Install Node.js on Self-Hosted Runner
+        run: |
+          if ! command -v node >/dev/null 2>&1 || ! node --version | grep -q '^v20\.'; then
+            sudo apt-get update
+            sudo apt-get install -y ca-certificates curl
+            sudo install -d -m 0755 /etc/apt/keyrings
+            sudo curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key -o /etc/apt/keyrings/nodesource.asc
+            echo "deb [signed-by=/etc/apt/keyrings/nodesource.asc] https://deb.nodesource.com/node_20.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+            sudo apt-get update
+            sudo apt-get install -y nodejs
+          fi
+          node --version
+          npm --version
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -40,7 +54,7 @@ jobs:
 
   test:
     name: TEST-JOB
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: build
     steps:
       - name: Run Tests
@@ -48,7 +62,7 @@ jobs:
 
   artifact_upload:
     name: ARTIFACT-UPLOAD-JOB
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: test
     steps:
       - name: Artifact Upload
@@ -58,11 +72,12 @@ jobs:
           path: |
             package*
 
-
   deploy:
     name: DEPLOY-JOB
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: artifact_upload
     steps:
       - name: Deploy Application
         run: echo "Application deployed"
+
+
