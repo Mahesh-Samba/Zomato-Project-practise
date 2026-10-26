@@ -31,6 +31,7 @@ jobs:
   test:
     name: TEST-JOB
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Run Tests
         run: echo "Tested"
@@ -38,6 +39,7 @@ jobs:
   artifact_upload:
     name: ARTIFACT-UPLOAD-JOB
     runs-on: ubuntu-latest
+    needs: test
     steps:
       - name: Upload Artifact
         uses: actions/upload-artifact@v7
@@ -49,6 +51,7 @@ jobs:
   deploy:
     name: DEPLOY-JOB
     runs-on: ubuntu-slim 
+    needs: artifact_upload
     steps:
       - name: Deploy Application
         run: echo "Application deployment placeholder"
