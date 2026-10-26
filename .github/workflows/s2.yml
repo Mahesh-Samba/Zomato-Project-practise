@@ -21,7 +21,8 @@ jobs:
 
       - name: Install Node.js on Self-Hosted Runner
         run: |
-          if ! command -v node >/dev/null 2>&1 || ! node --version | grep -q '^v20\.'; then
+          set -e
+          if ! command -v node >/dev/null 2>&1 || ! node --version | grep -q '^v20\.' || ! command -v npm >/dev/null 2>&1; then
             sudo apt-get update
             sudo apt-get install -y ca-certificates curl
             sudo install -d -m 0755 /etc/apt/keyrings
@@ -30,7 +31,10 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y nodejs
           fi
+          export PATH="/usr/bin:/usr/local/bin:$PATH"
+          command -v node
           node --version
+          command -v npm
           npm --version
 
       - name: Setup Node.js
