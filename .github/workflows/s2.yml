@@ -39,10 +39,8 @@ jobs:
     name: ARTIFACT-UPLOAD-JOB
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
       - name: Upload Artifact
-        uses: actions/upload-artifact@v
+        uses: actions/upload-artifact@v7
         with:
           name: application-artifact
           path: |
