@@ -19,23 +19,34 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install Node.js on Self-Hosted Runner
+     
+      - name: Install Node.js and npm
         run: |
           set -e
-          if ! command -v node >/dev/null 2>&1 || ! node --version | grep -q '^v20\.' || ! command -v npm >/dev/null 2>&1; then
+
+          if ! command -v node >/dev/null 2>&1 || \
+             ! node --version | grep -q '^v20\.' || \
+             ! command -v npm >/dev/null 2>&1; then
+
             sudo apt-get update
             sudo apt-get install -y ca-certificates curl
-            sudo install -d -m 0755 /etc/apt/keyrings
-            sudo curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key -o /etc/apt/keyrings/nodesource.asc
-            echo "deb [signed-by=/etc/apt/keyrings/nodesource.asc] https://deb.nodesource.com/node_20.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+
+            sudo mkdir -p /etc/apt/keyrings
+            sudo curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key \
+              -o /etc/apt/keyrings/nodesource.asc
+
+            echo "deb [signed-by=/etc/apt/keyrings/nodesource.asc] https://deb.nodesource.com/node_20.x nodistro main" \
+              | sudo tee /etc/apt/sources.list.d/nodesource.list
+
             sudo apt-get update
             sudo apt-get install -y nodejs
           fi
-          export PATH="/usr/bin:/usr/local/bin:$PATH"
-          command -v node
+
+          echo "Node.js path: $(command -v node)"
           node --version
-          command -v npm
+          echo "npm path: $(command -v npm)"
           npm --version
+
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
