@@ -51,8 +51,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - name: Upload Final Artifact
+      - name: Artifact Upload
         uses: actions/upload-artifact@v7
+        with:
+          name: artifact-1
+          path: |
+            package*
 
 
   deploy:
