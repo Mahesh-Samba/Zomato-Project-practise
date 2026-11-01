@@ -20,6 +20,16 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        
+      - name: Debug OIDC Configuration
+        env:
+          AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
+          REPOSITORY: ${{ github.repository }}
+          REF: ${{ github.ref }}
+        run: |
+          echo "Repository: $REPOSITORY"
+          echo "Branch reference: $REF"
+          echo "AWS Role ARN: $AWS_ROLE_ARN"
 
       - name: Configure AWS Credentials using OIDC 
         uses: aws-actions/configure-aws-credentials@v4 
